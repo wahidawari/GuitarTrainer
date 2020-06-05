@@ -12,4 +12,4 @@ python3.8 setup.py py2app
 ```
 For windows you need to use py2exe instead.
 
-To keep apllication size as small as possible, make sure you create a virtual environment where you install only the necessary libraries.
+To keep application size as small as possible, make sure you create a virtual environment where you install only the necessary libraries.
