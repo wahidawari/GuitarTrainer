@@ -86,46 +86,44 @@ class App(tkinter.Tk):
         exit()
 
     def start(self):
-        while True:
-            if self.runner.running:
-                try:
-                    freq = self.queue.get()
-                    if freq != None:
+        while self.runner.running:
+            try:
+                freq = self.queue.get()
+                if freq is not None:
 
-                        number = freq_to_number(freq, self.global_manager.a4_freq)
-                        note = note_name(number)
-                        difference = number_to_freq(round(number), self.global_manager.a4_freq) - freq
-                        differenceNextNote = number_to_freq(round(number), self.global_manager.a4_freq) - \
-                                             number_to_freq(round(number - 1), self.global_manager.a4_freq)
+                    number = freq_to_number(freq, self.global_manager.a4_freq)
+                    note = note_name(number)
+                    difference = number_to_freq(round(number), self.global_manager.a4_freq) - freq
+                    differenceNextNote = number_to_freq(round(number), self.global_manager.a4_freq) - \
+                                         number_to_freq(round(number - 1), self.global_manager.a4_freq)
 
-                        needleAngle = -90 * (difference / differenceNextNote * 2)
+                    needleAngle = -90 * (difference / differenceNextNote * 2)
 
-                        if abs(needleAngle) < 5:
-                            self.main_frame.underCanvas.itemconfig(self.main_frame.needle, fill=self.color_manager.green)
-                            self.hitCounter += 1
-                        else:
-                            self.main_frame.underCanvas.itemconfig(self.main_frame.needle, fill=self.color_manager.red)
-                            self.hitCounter = 0
+                    if abs(needleAngle) < 5:
+                        self.main_frame.underCanvas.itemconfig(self.main_frame.needle, fill=self.color_manager.green)
+                        self.hitCounter += 1
+                    else:
+                        self.main_frame.underCanvas.itemconfig(self.main_frame.needle, fill=self.color_manager.red)
+                        self.hitCounter = 0
 
-                        if self.hitCounter > 7:
-                            self.hitCounter = 0
-                            self.global_manager.playSound = True
+                    if self.hitCounter > 7:
+                        self.hitCounter = 0
+                        self.global_manager.playSound = True
 
-                        self.needleBuffer[:-1] = self.needleBuffer[1:]
-                        self.needleBuffer[-1:] = needleAngle
+                    self.needleBuffer[:-1] = self.needleBuffer[1:]
+                    self.needleBuffer[-1:] = needleAngle
 
-                        self.main_frame.set_needle_angle(average(self.needleBuffer))
+                    self.main_frame.set_needle_angle(average(self.needleBuffer))
 
-                        self.main_frame.noteLabel.configure(text=note)
-                        self.main_frame.buttonHertz.label.configure(text=str(round(-difference, 1)) + " Hz")
+                    self.main_frame.noteLabel.configure(text=note)
+                    self.main_frame.buttonHertz.label.configure(text=str(round(-difference, 1)) + " Hz")
 
-                    self.update()
-                except Exception as e:
-                    print('Error on line {}'.format(sys.exc_info()[-1].tb_lineno), type(e).__name__, e)
-                    time.sleep(1 / FPS)
-            else:
-                print("-- program ended --")
-                break
+                self.update()
+            except Exception as e:
+                print('Error on line {}'.format(sys.exc_info()[-1].tb_lineno), type(e).__name__, e)
+                time.sleep(1 / FPS)
+
+        print("-- program ended --")
 
 
 if __name__ == "__main__":
