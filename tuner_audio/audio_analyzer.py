@@ -5,11 +5,14 @@ from tuner_settings.audio_settings import *
 
 
 def freq_to_number(f, a4_freq):
-    return 12*np.log2(f/a4_freq) + 69
+    if f == 0:
+        print("Frequency is 0. Most likely your program has no acces to the microphone. Try to start the program from the command prompt, or give your ide acces to the mic.")
+        return 0
+    return 12 * np.log2(f / a4_freq) + 69
 
 
 def number_to_freq(n, a4_freq):
-    return a4_freq * 2.0**((n-69)/12.0)
+    return a4_freq * 2.0**((n - 69) / 12.0)
 
 
 def note_name(n):
