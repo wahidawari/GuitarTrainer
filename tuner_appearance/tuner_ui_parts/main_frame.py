@@ -1,9 +1,8 @@
 import tkinter
-
 from math import sin, radians
 
 from tuner_appearance.tuner_ui_parts.custum_button import CustomButton
-from tuner_settings.global_settings import *
+from tuner_settings.app_settings import *
 
 
 class MainFrame(tkinter.Frame):
@@ -91,6 +90,7 @@ class MainFrame(tkinter.Frame):
                                         custom_bg=self.color_manager.blue,
                                         text="440 Hz",
                                         hover=False)
+
         self.buttonHertz.place(anchor="sw",
                                relx=0.05,
                                rely=0.9,
@@ -107,17 +107,17 @@ class MainFrame(tkinter.Frame):
                               height=61,
                               width=144)
 
-        self.buttonBell = CustomButton(master=self,
-                                       custom_bg=self.color_manager.gray,
-                                       imageset=[self.image_manager.bell_image,
-                                                 self.image_manager.bell_hovered_image,
-                                                 self.image_manager.bell_muted_image,
-                                                 self.image_manager.bell_muted_hovered_image])
-        self.buttonBell.place(anchor="ne",
-                              relx=0.95,
-                              rely=0.05,
-                              height=self.image_manager.bell_image.height(),
-                              width=self.image_manager.bell_image.width())
+        self.mute_button = CustomButton(master=self,
+                                        custom_bg=self.color_manager.gray,
+                                        imageset=[self.image_manager.bell_image,
+                                                  self.image_manager.bell_hovered_image,
+                                                  self.image_manager.bell_muted_image,
+                                                  self.image_manager.bell_muted_hovered_image])
+        self.mute_button.place(anchor="ne",
+                               relx=0.95,
+                               rely=0.05,
+                               height=self.image_manager.bell_image.height(),
+                               width=self.image_manager.bell_image.width())
 
     def set_needle_angle(self, deg):
         x = sin(radians(180 - deg))
@@ -129,3 +129,4 @@ class MainFrame(tkinter.Frame):
                                 CANVAS_SIZE * 0.5 + (CANVAS_SIZE * 0.45 * x),
                                 CANVAS_SIZE * 0.5 + (CANVAS_SIZE * 0.45 * y))
         return x, y
+
