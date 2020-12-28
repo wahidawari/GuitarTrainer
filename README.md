@@ -11,7 +11,7 @@ pip install -r requirements.txt
 Then you can do:
 ```
 python main.py
-
+```
 
 ### Create standalone application
 To create a standalone application use py2app or py2exe, and make sure you got the exact same library versions as in my requirements.txt.
