@@ -1,7 +1,7 @@
 import tkinter
 
 from tuner_appearance.tuner_ui_parts.custum_button import CustomButton
-from tuner_settings.global_settings import *
+from tuner_settings.app_settings import *
 
 
 class SettingsFrame(tkinter.Frame):
@@ -15,7 +15,8 @@ class SettingsFrame(tkinter.Frame):
 
         self.configure(bg=self.color_manager.gray)
 
-        self.infoFrame_bottomFrame = tkinter.Frame(master=self, bg=self.color_manager.dark_gray)
+        self.infoFrame_bottomFrame = tkinter.Frame(master=self,
+                                                   bg=self.color_manager.dark_gray)
         self.infoFrame_bottomFrame.place(relx=0,
                                          rely=0.75,
                                          relheight=0.25,
@@ -25,6 +26,7 @@ class SettingsFrame(tkinter.Frame):
                                        custom_bg=self.color_manager.blue,
                                        text="Back",
                                        function=self.master.draw_main_frame)
+
         self.buttonBack.place(anchor="se",
                               relx=0.95,
                               rely=0.8,
@@ -36,6 +38,7 @@ class SettingsFrame(tkinter.Frame):
                                            fg=self.color_manager.light_gray,
                                            font=("Avenir", 18),
                                            text=ABOUT_TEXT)
+
         self.labelInfoText.place(anchor="center",
                                  relx=0.5,
                                  rely=0.12,
@@ -47,6 +50,7 @@ class SettingsFrame(tkinter.Frame):
                                            fg=self.color_manager.light_gray,
                                            font=("Avenir", 32),
                                            text="A4 =")
+
         self.labelInfoText.place(anchor="center",
                                  relx=0.2,
                                  rely=0.45,
@@ -57,6 +61,7 @@ class SettingsFrame(tkinter.Frame):
                                            custom_bg=self.color_manager.blue,
                                            text="440 Hz",
                                            hover=False)
+
         self.labelFrequency.place(anchor="center",
                                   relx=0.5,
                                   rely=0.45,
@@ -68,6 +73,7 @@ class SettingsFrame(tkinter.Frame):
                                          imageset=[self.image_manager.arrowUp_image,
                                                    self.image_manager.arrowUp_image_hovered] * 2,
                                          function=self.frequency_button_up)
+
         self.buttonFreqUp.place(anchor="center",
                                 relx=0.5,
                                 rely=0.3,
@@ -79,6 +85,7 @@ class SettingsFrame(tkinter.Frame):
                                            imageset=[self.image_manager.arrowDown_image,
                                                      self.image_manager.arrowDown_image_hovered] * 2,
                                            function=self.frequency_button_down)
+
         self.buttonFreqDown.place(anchor="center",
                                   relx=0.5,
                                   rely=0.6,
