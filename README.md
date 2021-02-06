@@ -26,7 +26,7 @@ For windows, you would need to use py2exe instead and modify the setup.py file.
 To keep application size as small as possible, make sure you create a virtual environment where you install
 only the necessary libraries. Note that the MacOS dark-mode currently **only** works with the **anaconda python** Version.
 If you compile the app with a python.org version, you have to disable the dark-mode by deleting
-the ``'NSRequiresAquaSystemAppearance': False```entry in setup.py, which causes the application window to go
+the ```'NSRequiresAquaSystemAppearance': False```entry in setup.py, which causes the application window to go
 into dark-mode.
 
 ### Functionality
