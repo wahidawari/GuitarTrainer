@@ -27,7 +27,7 @@ python3 main.py
 ### Create standalone application
 You can also create a standalone application for macOS or Windows by yourself. For MacOS you can use py2app:
 ```
-python3.8 setup.py py2app
+python3 setup.py py2app
 ```
 For windows, you would need to use py2exe instead and modify the setup.py file.
 
