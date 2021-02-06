@@ -3,9 +3,9 @@
 This is a simple **guitar tuner** program written in python with Tkinter, PyAudio and NumPy.
 The played note is automatically recognized through the microphone and an acoustic signal is
 heard when the tuning is correct. If you want you can also change the reference-tone to another
-frequency. Besides this, the app also supports MacOS dark-mode.
+frequency. Besides this, the app also supports macOS dark-mode.
 
-**Download MacOS app:** https://github.com/TomSchimansky/GuitarTuner/releases/tag/3.0
+**Download macOS app:** https://github.com/TomSchimansky/GuitarTuner/releases/tag/3.0
 
 ### Functionality
 
@@ -25,14 +25,14 @@ python3 main.py
 ```
 
 ### Create standalone application
-You can also create a standalone application for MacOS or Windows by yourself. For MacOS you can use py2app:
+You can also create a standalone application for macOS or Windows by yourself. For MacOS you can use py2app:
 ```
 python3.8 setup.py py2app
 ```
 For windows, you would need to use py2exe instead and modify the setup.py file.
 
 To keep application size as small as possible, make sure you create a virtual environment where you install
-only the necessary libraries. Note that the MacOS dark-mode currently **only** works with the **anaconda python** Version.
+only the necessary libraries. Note that the macOS dark-mode currently **only** works with the **anaconda python** Version.
 If you compile the app with a python.org version, you have to disable the dark-mode by deleting
 the ```'NSRequiresAquaSystemAppearance': False```entry in setup.py, which causes the application window to go
 into dark-mode.
