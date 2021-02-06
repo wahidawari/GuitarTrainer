@@ -2,6 +2,8 @@ from threading import Lock
 
 
 class ProtectedList(object):
+    """ Simple queue to share data between Threads with lock protection """
+
     def __init__(self):
         self.elements = []
         self.lock = self.lock = Lock()
@@ -26,16 +28,4 @@ class ProtectedList(object):
         string = str(self.elements)
         self.lock.release()
         return string
-
-
-class GlobalManager(object):
-    def __init__(self):
-        self.a4_freq = 440
-        self.play_sound = False
-
-    def frequencyUp(self):
-        self.a4_freq += 1
-
-    def frequencyDown(self):
-        self.a4_freq -= 1
 

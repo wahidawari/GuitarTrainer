@@ -3,37 +3,33 @@ from threading import Thread
 import numpy as np
 import sys
 
-from tuner_settings.audio_settings import *
+from settings import Settings
 
 
 class AudioAnalyzer(object):
     def __init__(self, queue):
-        self.buffer = np.zeros(CHUNKSIZE * BUFFERTIMES)
+        self.buffer = np.zeros(Settings.CHUNK_SIZE * Settings.BUFFER_TIMES)
         self.running = False
 
         try:
             self.audio_object = PyAudio()
             self.stream = self.audio_object.open(format=paInt16,
                                                  channels=1,
-                                                 rate=RATE,
+                                                 rate=Settings.SAMPLING_RATE,
                                                  input=True,
-                                                 frames_per_buffer=CHUNKSIZE)
+                                                 output=False,
+                                                 frames_per_buffer=Settings.CHUNK_SIZE)
         except Exception as e:
-            print('Error on line {}'.format(sys.exc_info()[-1].tb_lineno), type(e).__name__, e)
+            sys.stderr.write('Error: Line {} {} {}\n'.format(sys.exc_info()[-1].tb_lineno, type(e).__name__, e))
             return
 
         self.analyze_thread = Thread(target=self.analyzing_thread_function,
                                      args=[queue])
 
-    def start(self):
-        self.running = True
-        self.analyze_thread.start()
-
     @staticmethod
     def freq_to_number(f, a4_freq):
         if f == 0:
-            print("""Frequency is 0. Most likely your program has no acces to the microphone.
-                     Try to start the program from the command prompt, or give your ide acces to the mic.""")
+            sys.stderr.write("Error: No frequency data. Program has potentially no access to microphone\n")
             return 0
         return 12 * np.log2(f / a4_freq) + 69
 
@@ -43,7 +39,11 @@ class AudioAnalyzer(object):
 
     @staticmethod
     def note_name(n):
-        return NOTE_NAMES[int(round(n) % 12)]
+        return Settings.NOTE_NAMES[int(round(n) % 12)]
+
+    def start(self):
+        self.running = True
+        self.analyze_thread.start()
 
     def analyzing_thread_function(self, queue):
         """Main function where the microphone buffer gets read and
@@ -51,21 +51,21 @@ class AudioAnalyzer(object):
 
         while self.running:
             try:
-                data = self.stream.read(CHUNKSIZE, exception_on_overflow=False)
+                data = self.stream.read(Settings.CHUNK_SIZE, exception_on_overflow=False)
                 data = np.frombuffer(data, dtype=np.int16)
 
-                self.buffer[:-CHUNKSIZE] = self.buffer[CHUNKSIZE:]
-                self.buffer[-CHUNKSIZE:] = data
+                self.buffer[:-Settings.CHUNK_SIZE] = self.buffer[Settings.CHUNK_SIZE:]
+                self.buffer[-Settings.CHUNK_SIZE:] = data
 
                 numpydata = abs(np.fft.fft(self.buffer))
                 numpydata = numpydata[:int(len(numpydata) / 2)]
 
-                freqs = np.fft.fftfreq(len(numpydata), 1. / RATE)
+                frequencies = np.fft.fftfreq(len(numpydata), 1. / Settings.SAMPLING_RATE)
 
-                queue.put(round(freqs[np.argmax(numpydata)], 2))
+                queue.put(round(frequencies[np.argmax(numpydata)], 2))
 
             except Exception as e:
-                print('Error on line {}'.format(sys.exc_info()[-1].tb_lineno), type(e).__name__, e)
+                sys.stderr.write('Error: Line {} {} {}\n'.format(sys.exc_info()[-1].tb_lineno, type(e).__name__, e))
 
         self.stream.stop_stream()
         self.stream.close()
