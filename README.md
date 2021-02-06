@@ -5,7 +5,7 @@ The played note is automatically recognized through the microphone and an acoust
 heard when the tuning is correct. If you want you can also change the reference-tone to another
 frequency. Besides this, the app also supports MacOS dark-mode.
 
-Download MacOS app: https://github.com/TomSchimansky/GuitarTuner/releases/tag/3.0
+**Download MacOS app:** https://github.com/TomSchimansky/GuitarTuner/releases/tag/3.0
 
 ### Functionality
 
