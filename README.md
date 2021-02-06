@@ -16,7 +16,8 @@ python3 main.py
 ```
 
 ### Create standalone application
-To create a standalone application for MacOS, you can use py2app:
+You can download the MacOS app here: https://github.com/TomSchimansky/GuitarTuner/releases/tag/3.0,
+or create a standalone application for MacOS by yourself with py2app:
 ```
 python3.8 setup.py py2app
 ```
