@@ -2,31 +2,31 @@ import tkinter
 import tkinter.messagebox
 import os
 import sys
-
-from numpy import zeros, average
-import time
+import numpy as np
 
 from tuner_audio.audio_analyzer import AudioAnalyzer
-from tuner_audio.threading_helper import ProtectedList, GlobalManager
+from tuner_audio.threading_helper import ProtectedList
 from tuner_audio.sound_thread import SoundThread
 
-from tuner_appearance.color_manager import ColorManager
-from tuner_appearance.image_manager import ImageManager
-from tuner_appearance.tuner_ui_parts.main_frame import MainFrame
-from tuner_appearance.tuner_ui_parts.settings_frame import SettingsFrame
+from tuner_appearance_manager.color_manager import ColorManager
+from tuner_appearance_manager.image_manager import ImageManager
+from tuner_appearance_manager.timing import Timer
 
-from tuner_settings.app_settings import *
+from tuner_ui_parts.main_frame import MainFrame
+from tuner_ui_parts.settings_frame import SettingsFrame
 
-MAIN_PATH = os.path.dirname(__file__)
+from settings import Settings
 
 
 class App(tkinter.Tk):
     def __init__(self, *args, **kwargs):
+        # os.system("defaults write -g NSRequiresAquaSystemAppearance -bool No")  # only for dark-mode testing
         tkinter.Tk.__init__(self, *args, **kwargs)
 
+        self.main_path = os.path.dirname(os.path.abspath(__file__))
+
         self.color_manager = ColorManager()
-        self.image_manager = ImageManager(MAIN_PATH)
-        self.global_manager = GlobalManager()
+        self.image_manager = ImageManager(self.main_path)
         self.frequency_queue = ProtectedList()
 
         self.main_frame = MainFrame(self)
@@ -35,39 +35,49 @@ class App(tkinter.Tk):
         self.audio_analyzer = AudioAnalyzer(self.frequency_queue)
         self.audio_analyzer.start()
 
-        self.play_sound_thread = SoundThread(MAIN_PATH + "/assets/sounds/drop.wav",
-                                             self.global_manager,
-                                             self.main_frame.mute_button)
+        self.play_sound_thread = SoundThread(self.main_path + "/assets/sounds/drop.wav")
         self.play_sound_thread.start()
 
-        self.needle_buffer_array = zeros(5)
+        self.needle_buffer_array = np.zeros(5)
         self.tone_hit_counter = 0
+        self.a4_frequency = 440
 
-        self.minsize(WIDTH, HEIGHT)
+        self.dark_mode_active = False
+
+        self.title(Settings.APP_NAME)
+        self.geometry(str(Settings.WIDTH) + "x" + str(Settings.HEIGHT))
         self.resizable(True, True)
-        self.title(APP_NAME)
-        self.geometry(str(WIDTH) + "x" + str(HEIGHT))
-        self.configure(background=self.color_manager.gray)
+        self.minsize(Settings.WIDTH, Settings.HEIGHT)
+        self.maxsize(Settings.MAX_WIDTH, Settings.MAX_HEIGHT)
+        self.configure(background=self.color_manager.background_layer_1)
 
         self.protocol("WM_DELETE_WINDOW", self.on_closing)
-        self.bind("<Command-q>", self.on_closing)
-        self.bind("<Command-w>", self.on_closing)
 
-        menubar = tkinter.Menu(master=self)
-        app_menu = tkinter.Menu(menubar, name='apple')
-        menubar.add_cascade(menu=app_menu)
+        if sys.platform == "darwin":  # MacOS X and MacOS 11
+            self.bind("<Command-q>", self.on_closing)
+            self.bind("<Command-w>", self.on_closing)
+            self.createcommand('tk::mac::Quit', self.on_closing)
 
-        app_menu.add_command(label='About ' + APP_NAME, command=self.about_dialog)
-        app_menu.add_separator()
+            menu_bar = tkinter.Menu(master=self)
+            app_menu = tkinter.Menu(menu_bar, name='apple')
+            menu_bar.add_cascade(menu=app_menu)
 
-        self.createcommand('tk::mac::Quit', self.on_closing)
-        self.config(menu=menubar)
+            app_menu.add_command(label='About ' + Settings.APP_NAME, command=self.about_dialog)
+            app_menu.add_separator()
+
+            self.config(menu=menu_bar)
+
+        elif "win" in sys.platform:  # Windows
+            self.bind("<Alt-Key-F4>", self.on_closing)
+
+        self.timer = Timer(Settings.FPS)
 
         self.draw_main_frame()
 
-    def about_dialog(self):
-        tkinter.messagebox.showinfo(title=APP_NAME,
-                                    message=ABOUT_TEXT)
+    @staticmethod
+    def about_dialog():
+        tkinter.messagebox.showinfo(title=Settings.APP_NAME,
+                                    message=Settings.ABOUT_TEXT)
 
     def draw_settings_frame(self, event=0):
         self.main_frame.place_forget()
@@ -78,51 +88,70 @@ class App(tkinter.Tk):
         self.main_frame.place(relx=0, rely=0, relheight=1, relwidth=1)
 
     def on_closing(self, event=0):
+        # os.system("defaults delete -g NSRequiresAquaSystemAppearance")  # only dark-mode for testing
         self.audio_analyzer.running = False
         self.play_sound_thread.running = False
         self.destroy()
 
+    def update_color(self):
+        self.main_frame.update_color()
+        self.settings_frame.update_color()
+
     def start(self):
         while self.audio_analyzer.running:
+
             try:
+                dark_mode_state = self.color_manager.detect_os_dark_mode()
+                if dark_mode_state is not self.dark_mode_active:
+                    if dark_mode_state is True:
+                        self.color_manager.set_mode("Dark")
+                    else:
+                        self.color_manager.set_mode("Light")
+
+                    self.dark_mode_active = dark_mode_state
+                    self.update_color()
+
                 freq = self.frequency_queue.get()
                 if freq is not None:
 
-                    number = self.audio_analyzer.freq_to_number(freq, self.global_manager.a4_freq)
+                    number = self.audio_analyzer.freq_to_number(freq, self.a4_frequency)
                     note = self.audio_analyzer.note_name(number)
-                    difference = self.audio_analyzer.number_to_freq(round(number), self.global_manager.a4_freq) - freq
-                    difference_next_note = self.audio_analyzer.number_to_freq(round(number), self.global_manager.a4_freq) - \
-                                         self.audio_analyzer.number_to_freq(round(number - 1), self.global_manager.a4_freq)
+                    difference = self.audio_analyzer.number_to_freq(round(number), self.a4_frequency) - freq
+                    difference_next_note = self.audio_analyzer.number_to_freq(round(number), self.a4_frequency) -\
+                                           self.audio_analyzer.number_to_freq(round(number - 1), self.a4_frequency)
 
-                    neddle_angle = -90 * (difference / difference_next_note * 2)
+                    needle_angle = -90 * ((difference / difference_next_note) * 2)
 
-                    if abs(neddle_angle) < 5:
-                        self.main_frame.underCanvas.itemconfig(self.main_frame.needle, fill=self.color_manager.green)
+                    if abs(needle_angle) < 5:
+                        self.main_frame.set_needle_color("green")
                         self.tone_hit_counter += 1
                     else:
-                        self.main_frame.underCanvas.itemconfig(self.main_frame.needle, fill=self.color_manager.red)
+                        self.main_frame.set_needle_color("red")
                         self.tone_hit_counter = 0
 
                     if self.tone_hit_counter > 7:
                         self.tone_hit_counter = 0
-                        self.global_manager.play_sound = True
+
+                        if self.main_frame.button_mute.pressed is not True:
+                            self.play_sound_thread.play_sound()
 
                     self.needle_buffer_array[:-1] = self.needle_buffer_array[1:]
-                    self.needle_buffer_array[-1:] = neddle_angle
+                    self.needle_buffer_array[-1:] = needle_angle
 
-                    self.main_frame.set_needle_angle(average(self.needle_buffer_array))
+                    self.main_frame.set_needle_angle(np.average(self.needle_buffer_array))
 
-                    self.main_frame.noteLabel.configure(text=note)
-                    self.main_frame.buttonHertz.label.configure(text=str(round(-difference, 1)) + " Hz")
+                    self.main_frame.note_label.configure(text=note)
+
+                    self.main_frame.button_frequency.set_text(str(round(-difference, 1)) + " Hz")
 
                 self.update()
+                self.timer.wait()
 
-            except Exception as e:
-                print('Error on line {}'.format(sys.exc_info()[-1].tb_lineno), type(e).__name__, e)
-                time.sleep(1 / FPS)
+            except Exception as err:
+                sys.stderr.write('Error: Line {} {} {}\n'.format(sys.exc_info()[-1].tb_lineno, type(err).__name__, err))
+                self.timer.wait()
 
 
 if __name__ == "__main__":
     app = App()
     app.start()
-

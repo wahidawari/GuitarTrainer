@@ -1,17 +1,14 @@
 """
-Compilation worked with:
+For Compilation MacOS you can do:
 
-MacOs Catalina 15.5
-Python 3.8.3
-setuptools=44.1.0
-py2app=0.21
-pillow=6.2.2
+pip3 install -r requirements.txt
+python3 setup.py py2app
 
-zsh: python3.8 setup.py py2app
 """
 
+import os
 from setuptools import setup
-from tuner_settings.global_settings import APP_NAME
+from settings import Settings
 
 APP = ['main.py']
 
@@ -29,22 +26,26 @@ IMAGE_FILES = ["assets/images/arrowDown_hovered.png",
 OPTIONS = {'argv_emulation': False,
            'iconfile': 'assets/images/GuitarTunerDesign.icns',
            'plist': {
-               'CFBundleName': APP_NAME,
-               'CFBundleDisplayName': APP_NAME,
-               'CFBundleExecutable': APP_NAME,
+               'CFBundleName': Settings.APP_NAME,
+               'CFBundleDisplayName': Settings.APP_NAME,
+               'CFBundleExecutable': Settings.APP_NAME,
                'CFBundleGetInfoString': "Tune your guitar the most simplest way.",
-               'CFBundleIdentifier': "com.TomSchimansky.GuitarTuner",
-               'CFBundleVersion': "2.0.0",
-               'CFBundleShortVersionString': "2.0.0",
-               'NSHumanReadableCopyright': u"Copyright © 2020, Tom Schimansky, All Rights Reserved"
+               'CFBundleIdentifier': Settings.CF_BUNDLE_IDENTIFIER,
+               'CFBundleVersion': Settings.VERSION,
+               'CFBundleShortVersionString': Settings.VERSION,
+               'NSRequiresAquaSystemAppearance': False,
+               'NSHumanReadableCopyright': u"Copyright © {}, {}, All Rights Reserved".format(Settings.YEAR, Settings.AUTHOR)
            }}
 
-setup(
-    name=APP_NAME,
-    app=APP,
-    author='Tom Schimansky',
-    data_files=[("assets/images", IMAGE_FILES),
-                ("assets/sounds", SOUND_FILES)],
-    options={'py2app': OPTIONS},
-    setup_requires=['py2app'],
-)
+REMOVE_OLD_BUILD = True
+
+if REMOVE_OLD_BUILD is True:
+    os.system("rm -r build")
+    os.system("rm -r dist")
+
+setup(name=Settings.APP_NAME,
+      app=APP,
+      author=Settings.AUTHOR,
+      data_files=[("assets/images", IMAGE_FILES), ("assets/sounds", SOUND_FILES)],
+      options={'py2app': OPTIONS},
+      setup_requires=['py2app'])
