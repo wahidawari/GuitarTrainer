@@ -1,10 +1,4 @@
-"""
-For Compilation MacOS you can do:
-
-pip3 install -r requirements.txt
-python3 setup.py py2app
-
-"""
+""" This setup.py file is build for compilation on macOS with py2app """
 
 import os
 from setuptools import setup
