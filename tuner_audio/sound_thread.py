@@ -6,7 +6,7 @@ import time
 
 class SoundThread(Thread):
     """ Simple threaded class that takes a path to an audio.wav file
-        and the plays it when SoundThread.play_sound() is called. """
+        and then plays it when SoundThread.play_sound() is called. """
     
     def __init__(self, path_to_file):
         Thread.__init__(self)
