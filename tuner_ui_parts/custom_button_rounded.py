@@ -3,8 +3,7 @@ import sys
 
 
 class RoundedButton(tkinter.Frame):
-    """ tkinter custom button without border
-        and rounded corners """
+    """ tkinter custom button with rounded corners and hover-effect """
 
     def __init__(self,
                  bg_color=None,
