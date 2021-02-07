@@ -6,8 +6,11 @@ import sys
 from settings import Settings
 
 
-class AudioAnalyzer(object):
-    def __init__(self, queue):
+class AudioAnalyzer(Thread):
+    def __init__(self, queue, *args, **kwargs):
+        Thread.__init__(self, *args, **kwargs)
+
+        self.queue = queue
         self.buffer = np.zeros(Settings.CHUNK_SIZE * Settings.BUFFER_TIMES)
         self.running = False
 
@@ -22,9 +25,6 @@ class AudioAnalyzer(object):
         except Exception as e:
             sys.stderr.write('Error: Line {} {} {}\n'.format(sys.exc_info()[-1].tb_lineno, type(e).__name__, e))
             return
-
-        self.analyze_thread = Thread(target=self.analyzing_thread_function,
-                                     args=[queue])
 
     @staticmethod
     def freq_to_number(f, a4_freq):
@@ -41,13 +41,11 @@ class AudioAnalyzer(object):
     def note_name(n):
         return Settings.NOTE_NAMES[int(round(n) % 12)]
 
-    def start(self):
-        self.running = True
-        self.analyze_thread.start()
-
-    def analyzing_thread_function(self, queue):
+    def run(self):
         """Main function where the microphone buffer gets read and
            the fourier transformation gets applied"""
+
+        self.running = True
 
         while self.running:
             try:
@@ -62,7 +60,7 @@ class AudioAnalyzer(object):
 
                 frequencies = np.fft.fftfreq(len(numpydata), 1. / Settings.SAMPLING_RATE)
 
-                queue.put(round(frequencies[np.argmax(numpydata)], 2))
+                self.queue.put(round(frequencies[np.argmax(numpydata)], 2))
 
             except Exception as e:
                 sys.stderr.write('Error: Line {} {} {}\n'.format(sys.exc_info()[-1].tb_lineno, type(e).__name__, e))
