@@ -27,11 +27,11 @@ class App(tkinter.Tk):
 
         self.color_manager = ColorManager()
         self.image_manager = ImageManager(self.main_path)
-        self.frequency_queue = ProtectedList()
 
         self.main_frame = MainFrame(self)
         self.settings_frame = SettingsFrame(self)
-
+        
+        self.frequency_queue = ProtectedList()
         self.audio_analyzer = AudioAnalyzer(self.frequency_queue)
         self.audio_analyzer.start()
 
