@@ -1,0 +1,22 @@
+Hi, I am trying to make this file run on my computer but it keeps giving me the error that:
+$ python test_script.py
+Traceback (most recent call last):
+  File "C:\Users\faris\OneDrive\Documents\guitar project\test_script.py", line 7, in <module>
+    from tuner_audio.audio_analyzer import AudioAnalyzer
+ModuleNotFoundError: No module named 'tuner_audio'
+
+
+from line 7 to 16 there seems to be an error (these lines): 
+from tuner_audio.audio_analyzer import AudioAnalyzer
+from tuner_audio.threading_helper import ProtectedList
+from tuner_audio.sound_thread import SoundThread
+
+from tuner_appearance_manager.color_manager import ColorManager
+from tuner_appearance_manager.image_manager import ImageManager
+from tuner_appearance_manager.timing import Timer
+
+from tuner_ui_parts.main_frame import MainFrame
+from tuner_ui_parts.settings_frame import SettingsFrame
+
+
+I would appreciate it if you could help me out and tell me what I am doing wrong
