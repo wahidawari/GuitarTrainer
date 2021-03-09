@@ -1,3 +1,4 @@
+TrainerV1: prototype 
 import tkinter
 import tkinter.messagebox
 import os
