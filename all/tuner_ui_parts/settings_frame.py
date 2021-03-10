@@ -21,92 +21,60 @@ class SettingsFrame(tkinter.Frame):
                                 rely=0.8,
                                 relheight=0.2,
                                 relwidth=1)
-
-        self.button_back = RoundedButton(master=self.bottom_frame,
-                                         bg_color=self.color_manager.background_layer_0,
+        #tuner tab button
+        self.button_back = RoundedButton(master=self,
+                                         bg_color=self.color_manager.background_layer_1,
                                          fg_color=self.color_manager.theme_main,
                                          hover_color=self.color_manager.theme_light,
                                          text_font=("Avenir", 18),
-                                         text="Back",
+                                         text="Tuner",
                                          text_color=self.color_manager.text_main,
                                          corner_radius=10,
                                          width=120,
                                          height=45,
                                          function=self.master.draw_main_frame)
 
-        self.button_back.place(anchor="se",
-                               relx=0.95,
-                               rely=0.75,
+        self.button_back.place(anchor="n",
+                               relx=0.2,
+                               rely=0.30,
                                height=45,
                                width=120)
+        #trainer tab button
+        self.button_back = RoundedButton(master=self,
+                                         bg_color=self.color_manager.background_layer_1,
+                                         fg_color=self.color_manager.theme_main,
+                                         hover_color=self.color_manager.theme_light,
+                                         text_font=("Avenir", 18),
+                                         text="Trainer",
+                                         text_color=self.color_manager.text_main,
+                                         corner_radius=10,
+                                         width=120,
+                                         height=45,
+                                         function=self.master.draw_trainer_frame)
+
+        self.button_back.place(anchor="n",
+                               relx=0.5,
+                               rely=0.30,
+                               height=45,
+                               width=120)            
 
         self.label_info_text = tkinter.Label(master=self,
                                              bg=self.color_manager.background_layer_1,
                                              fg=self.color_manager.text_2,
-                                             font=("Avenir", 16),
-                                             text=Settings.ABOUT_TEXT)
+                                             font=("Avenir", 23),
+                                             text="Welcome to Guitar Trainarator 2000")
 
-        self.label_info_text.place(anchor="center",
+        self.label_info_text.place(anchor="n",
                                    relx=0.5,
-                                   rely=0.12,
+                                   rely=0.10,
                                    relheight=0.2,
-                                   relwidth=0.8)
+                                   relwidth=0.9)
 
-        self.label_note_text = tkinter.Label(master=self,
-                                             bg=self.color_manager.background_layer_1,
-                                             fg=self.color_manager.text_2,
-                                             font=("Avenir", 28),
-                                             text="A4 =")
+        
+        
 
-        self.label_note_text.place(anchor="center",
-                                   relx=0.2,
-                                   rely=0.45,
-                                   relheight=0.1,
-                                   relwidth=0.2)
+       
 
-        self.label_frequency = RoundedButton(master=self,
-                                             bg_color=self.color_manager.background_layer_1,
-                                             fg_color=self.color_manager.theme_main,
-                                             hover_color=self.color_manager.theme_main,
-                                             text_font=("Avenir", 28),
-                                             text="440 Hz",
-                                             text_color=self.color_manager.text_main,
-                                             corner_radius=10,
-                                             width=170,
-                                             height=65,
-                                             hover=False)
-
-        self.label_frequency.place(anchor="center",
-                                   relx=0.5,
-                                   rely=0.45)
-
-        self.button_frequency_up = CustomButton(master=self,
-                                                bg_color=self.color_manager.background_layer_1,
-                                                image_dict={"standard": self.image_manager.arrowUp_image,
-                                                     "clicked": self.image_manager.arrowUp_image,
-                                                     "standard_hover": self.image_manager.arrowUp_image_hovered,
-                                                     "clicked_hover": self.image_manager.arrowUp_image_hovered},
-                                                function=self.frequency_button_up)
-
-        self.button_frequency_up.place(anchor="center",
-                                       relx=0.5,
-                                       rely=0.3,
-                                       height=50,
-                                       width=150)
-
-        self.button_frequency_down = CustomButton(master=self,
-                                                  bg_color=self.color_manager.background_layer_1,
-                                                  image_dict={"standard": self.image_manager.arrowDown_image,
-                                                       "clicked": self.image_manager.arrowDown_image,
-                                                       "standard_hover": self.image_manager.arrowDown_image_hovered,
-                                                       "clicked_hover": self.image_manager.arrowDown_image_hovered},
-                                                  function=self.frequency_button_down)
-
-        self.button_frequency_down.place(anchor="center",
-                                         relx=0.5,
-                                         rely=0.6,
-                                         height=50,
-                                         width=150)
 
     def update_color(self):
         self.configure(bg=self.color_manager.background_layer_1)
@@ -135,3 +103,4 @@ class SettingsFrame(tkinter.Frame):
     def frequency_button_down(self):
         self.master.a4_frequency -= 1
         self.label_frequency.set_text(str(self.master.a4_frequency) + " Hz")
+
