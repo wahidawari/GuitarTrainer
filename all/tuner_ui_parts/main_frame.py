@@ -106,19 +106,19 @@ class MainFrame(tkinter.Frame):
                                     relx=0.05,
                                     rely=0.9)
 
-        self.button_info = RoundedButton(master=self.botton_frame,
+        self.button_exit = RoundedButton(master=self.botton_frame,
                                          bg_color=self.color_manager.background_layer_0,
                                          fg_color=self.color_manager.theme_main,
                                          hover_color=self.color_manager.theme_light,
                                          text_font=("Avenir", 18),
-                                         text="Info",
+                                         text="Exit",
                                          text_color=self.color_manager.text_main,
                                          corner_radius=10,
                                          width=120,
                                          height=45,
                                          function=self.master.draw_settings_frame)
 
-        self.button_info.place(anchor="se",
+        self.button_exit.place(anchor="se",
                                relx=0.95,
                                rely=0.9)
 
@@ -176,3 +176,6 @@ class MainFrame(tkinter.Frame):
                                  Settings.CANVAS_SIZE * 0.5 + (Settings.CANVAS_SIZE * 0.45 * x),
                                  Settings.CANVAS_SIZE * 0.5 + (Settings.CANVAS_SIZE * 0.45 * y))
         return x, y
+    
+    
+
