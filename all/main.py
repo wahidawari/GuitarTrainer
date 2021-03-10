@@ -13,6 +13,7 @@ from tuner_appearance_manager.image_manager import ImageManager
 from tuner_appearance_manager.timing import Timer
 
 from tuner_ui_parts.main_frame import MainFrame
+from tuner_ui_parts.trainer_frame import TrainerFrame
 from tuner_ui_parts.settings_frame import SettingsFrame
 
 from settings import Settings
@@ -30,6 +31,7 @@ class App(tkinter.Tk):
 
         self.main_frame = MainFrame(self)
         self.settings_frame = SettingsFrame(self)
+        self.trainer_frame = TrainerFrame(self)
         
         self.frequency_queue = ProtectedList()
         self.audio_analyzer = AudioAnalyzer(self.frequency_queue)
@@ -72,7 +74,7 @@ class App(tkinter.Tk):
 
         self.timer = Timer(Settings.FPS)
 
-        self.draw_main_frame()
+        self.draw_settings_frame()
 
     @staticmethod
     def about_dialog():
@@ -81,12 +83,18 @@ class App(tkinter.Tk):
 
     def draw_settings_frame(self, event=0):
         self.main_frame.place_forget()
+        self.trainer_frame.place_forget()
         self.settings_frame.place(relx=0, rely=0, relheight=1, relwidth=1)
-
+        
     def draw_main_frame(self, event=0):
         self.settings_frame.place_forget()
+        self.trainer_frame.place_forget()
         self.main_frame.place(relx=0, rely=0, relheight=1, relwidth=1)
-
+    
+    def draw_trainer_frame (self, event=0):
+        self.settings_frame.place_forget()
+        self.main_frame.place_forget()
+        self.trainer_frame.place(relx=0, rely=0, relheight=1, relwidth=1)
     def on_closing(self, event=0):
         # os.system("defaults delete -g NSRequiresAquaSystemAppearance")  # only dark-mode for testing
         self.audio_analyzer.running = False
@@ -96,6 +104,7 @@ class App(tkinter.Tk):
     def update_color(self):
         self.main_frame.update_color()
         self.settings_frame.update_color()
+        self.trainer_frame.update_color()
 
     def start(self):
         while self.audio_analyzer.running:
@@ -132,8 +141,7 @@ class App(tkinter.Tk):
                     if self.tone_hit_counter > 7:
                         self.tone_hit_counter = 0
 
-                        if self.main_frame.button_mute.pressed is not True:
-                            self.play_sound_thread.play_sound()
+                        
 
                     self.needle_buffer_array[:-1] = self.needle_buffer_array[1:]
                     self.needle_buffer_array[-1:] = needle_angle
@@ -154,4 +162,5 @@ class App(tkinter.Tk):
 
 if __name__ == "__main__":
     app = App()
+    app.geometry("1500x900")
     app.start()
