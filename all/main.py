@@ -15,6 +15,7 @@ from tuner_appearance_manager.timing import Timer
 from tuner_ui_parts.main_frame import MainFrame
 from tuner_ui_parts.trainer_frame import TrainerFrame
 from tuner_ui_parts.settings_frame import SettingsFrame
+#from tuner_ui_parts.chords_frame import ChordsFrame
 
 from settings import Settings
 
@@ -29,9 +30,12 @@ class App(tkinter.Tk):
         self.color_manager = ColorManager()
         self.image_manager = ImageManager(self.main_path)
 
+
+        #frames 
         self.main_frame = MainFrame(self)
         self.settings_frame = SettingsFrame(self)
         self.trainer_frame = TrainerFrame(self)
+        #self.chords_frame = ChordsFrame(self)
         
         self.frequency_queue = ProtectedList()
         self.audio_analyzer = AudioAnalyzer(self.frequency_queue)
@@ -85,16 +89,101 @@ class App(tkinter.Tk):
         self.main_frame.place_forget()
         self.trainer_frame.place_forget()
         self.settings_frame.place(relx=0, rely=0, relheight=1, relwidth=1)
+    
+    #def draw_chords_frame(self, event=0):
+        #self.main_frame.place_forget()
+        #self.trainer_frame.place_forget()
+        #self.settings_frame.place_forget()
+        #self.chords_frame.place(relx=0, rely=0, relheight=1, relwidth=1)
         
     def draw_main_frame(self, event=0):
         self.settings_frame.place_forget()
         self.trainer_frame.place_forget()
         self.main_frame.place(relx=0, rely=0, relheight=1, relwidth=1)
+
+        #code for tuner
+        while self.audio_analyzer.running: 
+            try: 
+                freq = self.frequency_queue.get()
+                if freq is not None:
+
+                    number = self.audio_analyzer.freq_to_number(freq, self.a4_frequency)
+                    note = self.audio_analyzer.note_name(number)
+                    difference = self.audio_analyzer.number_to_freq(round(number), self.a4_frequency) - freq
+                    difference_next_note = self.audio_analyzer.number_to_freq(round(number), self.a4_frequency) -\
+                                           self.audio_analyzer.number_to_freq(round(number - 1), self.a4_frequency)
+
+                    needle_angle = -90 * ((difference / difference_next_note) * 2)
+
+                    if abs(needle_angle) < 5:
+                        self.main_frame.set_needle_color("green")
+                        self.tone_hit_counter += 1
+                    else:
+                        self.main_frame.set_needle_color("red")
+                        self.tone_hit_counter = 0
+
+                    if self.tone_hit_counter > 7:
+                        self.tone_hit_counter = 0
+
+
+                    self.needle_buffer_array[:-1] = self.needle_buffer_array[1:]
+                    self.needle_buffer_array[-1:] = needle_angle
+
+                    self.main_frame.set_needle_angle(np.average(self.needle_buffer_array))
+
+                    self.main_frame.note_label.configure(text=note)
+
+                    self.main_frame.button_frequency.set_text(str(round(-difference, 1)) + " Hz")
+
+                self.update()
+                self.timer.wait()
+
+            except Exception as err:
+                sys.stderr.write('Error: Line {} {} {}\n'.format(sys.exc_info()[-1].tb_lineno, type(err).__name__, err))
+                self.timer.wait()
     
     def draw_trainer_frame (self, event=0):
         self.settings_frame.place_forget()
         self.main_frame.place_forget()
         self.trainer_frame.place(relx=0, rely=0, relheight=1, relwidth=1)
+        
+        #code for trainer
+
+        while self.audio_analyzer.running:
+            try:
+                dark_mode_state = self.color_manager.detect_os_dark_mode()
+                if dark_mode_state is not self.dark_mode_active:
+                    if dark_mode_state is True:
+                        self.color_manager.set_mode("Dark")
+                    else:
+                        self.color_manager.set_mode("Light")
+
+                    self.dark_mode_active = dark_mode_state
+                    self.update_color()
+
+                freq = self.frequency_queue.get()
+                if freq is not None:
+
+                    number = self.audio_analyzer.freq_to_number(freq, self.a4_frequency)
+                    note = self.audio_analyzer.note_name(number)
+                    
+                    if note == "A": 
+                        
+                        self.trainer_frame.note_label.configure(text="A", background = "green")
+
+                    else: 
+                        self.trainer_frame.note_label.configure(text="A", background = "red")
+
+                    
+
+                self.update()
+                self.timer.wait()
+
+            except Exception as err:
+                sys.stderr.write('Error: Line {} {} {}\n'.format(sys.exc_info()[-1].tb_lineno, type(err).__name__, err))
+                self.timer.wait()
+
+
     def on_closing(self, event=0):
         # os.system("defaults delete -g NSRequiresAquaSystemAppearance")  # only dark-mode for testing
         self.audio_analyzer.running = False
@@ -120,38 +209,6 @@ class App(tkinter.Tk):
                     self.dark_mode_active = dark_mode_state
                     self.update_color()
 
-                freq = self.frequency_queue.get()
-                if freq is not None:
-
-                    number = self.audio_analyzer.freq_to_number(freq, self.a4_frequency)
-                    note = self.audio_analyzer.note_name(number)
-                    difference = self.audio_analyzer.number_to_freq(round(number), self.a4_frequency) - freq
-                    difference_next_note = self.audio_analyzer.number_to_freq(round(number), self.a4_frequency) -\
-                                           self.audio_analyzer.number_to_freq(round(number - 1), self.a4_frequency)
-
-                    needle_angle = -90 * ((difference / difference_next_note) * 2)
-
-                    if abs(needle_angle) < 5:
-                        self.main_frame.set_needle_color("green")
-                        self.tone_hit_counter += 1
-                    else:
-                        self.main_frame.set_needle_color("red")
-                        self.tone_hit_counter = 0
-
-                    if self.tone_hit_counter > 7:
-                        self.tone_hit_counter = 0
-
-                        
-
-                    self.needle_buffer_array[:-1] = self.needle_buffer_array[1:]
-                    self.needle_buffer_array[-1:] = needle_angle
-
-                    self.main_frame.set_needle_angle(np.average(self.needle_buffer_array))
-
-                    self.main_frame.note_label.configure(text=note)
-
-                    self.main_frame.button_frequency.set_text(str(round(-difference, 1)) + " Hz")
-
                 self.update()
                 self.timer.wait()
 
@@ -164,3 +221,4 @@ if __name__ == "__main__":
     app = App()
     app.geometry("1500x900")
     app.start()
+
