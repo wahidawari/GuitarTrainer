@@ -56,20 +56,9 @@ class SettingsFrame(tkinter.Frame):
                                relx=0.5,
                                rely=0.30,
                                height=45,
-                               width=120)            
-
-        self.label_info_text = tkinter.Label(master=self,
-                                             bg=self.color_manager.background_layer_1,
-                                             fg=self.color_manager.text_2,
-                                             font=("Avenir", 23),
-                                             text="Welcome to Guitar Trainarator 2000")
-
-        self.label_info_text.place(anchor="n",
-                                   relx=0.5,
-                                   rely=0.10,
-                                   relheight=0.2,
-                                   relwidth=0.9)
-
+                               width=120)
+        #pictures frame button
+       
         
         
 
@@ -103,4 +92,5 @@ class SettingsFrame(tkinter.Frame):
     def frequency_button_down(self):
         self.master.a4_frequency -= 1
         self.label_frequency.set_text(str(self.master.a4_frequency) + " Hz")
+
 
