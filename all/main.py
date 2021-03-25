@@ -14,13 +14,25 @@ from tuner_appearance_manager.timing import Timer
 
 from tuner_ui_parts.main_frame import MainFrame
 from tuner_ui_parts.trainer_frame import TrainerFrame
-from tuner_ui_parts.settings_frame import SettingsFrame
-#from tuner_ui_parts.chords_frame import ChordsFrame
-
+from settings_frame import SettingsFrame
+from chords_frame import ChordsFrame
 from settings import Settings
 
+from a_chord_frame import AchordFrame
+from am_chord_frame import AmchordFrame
+from b_chord_frame import BchordFrame
+from bm_chord_frame import BmchordFrame
+from c_chord_frame import CchordFrame
+from cm_chord_frame import CmchordFrame
+from d_chord_frame import DchordFrame
+from dm_chord_frame import DmchordFrame
+from e_chord_frame import EchordFrame
+from em_chord_frame import EmchordFrame
+from g_chord_frame import GchordFrame
+from gm_chord_frame import GmchordFrame
 
-class App(tkinter.Tk):
+
+class App(tkinter.Tk): 
     def __init__(self, *args, **kwargs):
         # os.system("defaults write -g NSRequiresAquaSystemAppearance -bool No")  # only for dark-mode testing
         tkinter.Tk.__init__(self, *args, **kwargs)
@@ -35,8 +47,24 @@ class App(tkinter.Tk):
         self.main_frame = MainFrame(self)
         self.settings_frame = SettingsFrame(self)
         self.trainer_frame = TrainerFrame(self)
-        #self.chords_frame = ChordsFrame(self)
         
+        self.chords_frame = ChordsFrame(self)
+        self.a_chord_frame = AchordFrame(self)
+        self.am_chord_frame = AmchordFrame(self)
+        self.b_chord_frame = BchordFrame(self)
+        self.bm_chord_frame = BmchordFrame(self)
+        self.c_chord_frame = CchordFrame(self)
+        self.cm_chord_frame = CmchordFrame(self)
+        self.d_chord_frame = DchordFrame(self)
+        self.dm_chord_frame = DmchordFrame(self)
+        self.e_chord_frame = EchordFrame(self)
+        self.em_chord_frame = EmchordFrame(self)
+        self.g_chord_frame = GchordFrame(self)
+        self.gm_chord_frame = GmchordFrame(self)
+
+
+
+
         self.frequency_queue = ProtectedList()
         self.audio_analyzer = AudioAnalyzer(self.frequency_queue)
         self.audio_analyzer.start()
@@ -84,18 +112,75 @@ class App(tkinter.Tk):
     def about_dialog():
         tkinter.messagebox.showinfo(title=Settings.APP_NAME,
                                     message=Settings.ABOUT_TEXT)
+    #chord tab buttons
+    def draw_a_chord_frame(self, event=0):
+        self.chords_frame.place_forget()
+        self.a_chord_frame.place(relx=0, rely=0, relheight=1, relwidth=1)
+    def draw_am_chord_frame(self, event=0):
+        self.chords_frame.place_forget()
+        self.am_chord_frame.place(relx=0, rely=0, relheight=1, relwidth=1)
+
+    def draw_b_chord_frame(self, event=0):
+        self.chords_frame.place_forget()
+        self.b_chord_frame.place(relx=0, rely=0, relheight=1, relwidth=1)
+    def draw_bm_chord_frame(self, event=0):
+        self.chords_frame.place_forget()
+        self.bm_chord_frame.place(relx=0, rely=0, relheight=1, relwidth=1)
+
+    def draw_c_chord_frame(self, event=0):
+        self.chords_frame.place_forget()
+        self.c_chord_frame.place(relx=0, rely=0, relheight=1, relwidth=1)
+    def draw_cm_chord_frame(self, event=0):
+        self.chords_frame.place_forget()
+        self.cm_chord_frame.place(relx=0, rely=0, relheight=1, relwidth=1)
+
+    def draw_d_chord_frame(self, event=0):
+        self.chords_frame.place_forget()
+        self.d_chord_frame.place(relx=0, rely=0, relheight=1, relwidth=1)
+    def draw_dm_chord_frame(self, event=0):
+        self.chords_frame.place_forget()
+        self.dm_chord_frame.place(relx=0, rely=0, relheight=1, relwidth=1)
+
+    def draw_e_chord_frame(self, event=0):
+        self.chords_frame.place_forget()
+        self.e_chord_frame.place(relx=0, rely=0, relheight=1, relwidth=1)
+    def draw_em_chord_frame(self, event=0):
+        self.chords_frame.place_forget()
+        self.em_chord_frame.place(relx=0, rely=0, relheight=1, relwidth=1)
+    
+    def draw_g_chord_frame(self, event=0):
+        self.chords_frame.place_forget()
+        self.g_chord_frame.place(relx=0, rely=0, relheight=1, relwidth=1)
+    def draw_gm_chord_frame(self, event=0):
+        self.chords_frame.place_forget()
+        self.gm_chord_frame.place(relx=0, rely=0, relheight=1, relwidth=1)
+    # chord tab buttons done 
+
 
     def draw_settings_frame(self, event=0):
         self.main_frame.place_forget()
         self.trainer_frame.place_forget()
+        self.chords_frame.place_forget()
         self.settings_frame.place(relx=0, rely=0, relheight=1, relwidth=1)
-    
-    #def draw_chords_frame(self, event=0):
-        #self.main_frame.place_forget()
-        #self.trainer_frame.place_forget()
-        #self.settings_frame.place_forget()
-        #self.chords_frame.place(relx=0, rely=0, relheight=1, relwidth=1)
         
+    def draw_chords_frame(self, event=0):
+        self.settings_frame.place_forget()
+        self.e_chord_frame.place_forget()
+        self.chords_frame.place_forget()
+        self.a_chord_frame.place_forget()
+        self.am_chord_frame.place_forget()
+        self.b_chord_frame.place_forget()
+        self.bm_chord_frame.place_forget()
+        self.c_chord_frame.place_forget()
+        self.cm_chord_frame.place_forget()
+        self.d_chord_frame.place_forget()
+        self.dm_chord_frame.place_forget()
+        self.e_chord_frame.place_forget()
+        self.em_chord_frame.place_forget()
+        self.g_chord_frame.place_forget()
+        self.gm_chord_frame.place_forget()
+        self.chords_frame.place(relx=0, rely=0, relheight=1, relwidth=1)
+
     def draw_main_frame(self, event=0):
         self.settings_frame.place_forget()
         self.trainer_frame.place_forget()
@@ -125,6 +210,8 @@ class App(tkinter.Tk):
                     if self.tone_hit_counter > 7:
                         self.tone_hit_counter = 0
 
+                        if self.main_frame.button_mute.pressed is not True:
+                            self.play_sound_thread.play_sound()
 
                     self.needle_buffer_array[:-1] = self.needle_buffer_array[1:]
                     self.needle_buffer_array[-1:] = needle_angle
@@ -160,19 +247,24 @@ class App(tkinter.Tk):
 
                     self.dark_mode_active = dark_mode_state
                     self.update_color()
-
+                chords = ["A", "D", "E"]
                 freq = self.frequency_queue.get()
                 if freq is not None:
 
                     number = self.audio_analyzer.freq_to_number(freq, self.a4_frequency)
                     note = self.audio_analyzer.note_name(number)
                     
-                    if note == "A": 
+                    if note == chords[0]: 
                         
-                        self.trainer_frame.note_label.configure(text="A", background = "green")
+                        self.trainer_frame.note_label.configure(text=chords[0], background = "green")
+                        self.trainer_frame.note_label.configure(text=chords[1])
+                        if note == chords[1]: 
+                            self.trainer_frame.note_label.configure(text=chords[1], background = "green")
+                        else: 
+                            self.trainer_frame.note_label.configure(text=chords[1], background = "red")
 
                     else: 
-                        self.trainer_frame.note_label.configure(text="A", background = "red")
+                        self.trainer_frame.note_label.configure(text=chords[0], background = "red")
 
                     
 

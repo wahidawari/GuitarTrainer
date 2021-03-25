@@ -35,3 +35,4 @@ class ImageManager(object):
 
         self.arrowDown_image_hovered = ImageTk.PhotoImage(
             Image.open(main_path + "/assets/images/arrowDown_hovered.png").resize((147, 46), Image.ANTIALIAS))
+        

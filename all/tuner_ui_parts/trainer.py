@@ -82,7 +82,7 @@ class App(tkinter.Tk):
 
 
     def start(self):
-        while self.audio_analyzer.running:
+        while self.settings_frame.running:
 
             try:
                 dark_mode_state = self.color_manager.detect_os_dark_mode()
@@ -101,12 +101,12 @@ class App(tkinter.Tk):
                     number = self.audio_analyzer.freq_to_number(freq, self.a4_frequency)
                     note = self.audio_analyzer.note_name(number)
                     
-                    if note == "A": 
+                    if note == "E": 
                         
-                        self.trainer_frame.note_label.configure(text="A", background = "green")
+                        self.trainer_frame.note_label.configure(text="E", background = "green")
 
                     else: 
-                        self.trainer_frame.note_label.configure(text="A", background = "red")
+                        self.trainer_frame.note_label.configure(text="E", background = "red")
 
                     
 

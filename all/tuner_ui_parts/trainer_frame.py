@@ -69,7 +69,7 @@ class TrainerFrame(tkinter.Frame):
                                                                     width=0)
 
         self.note_label = tkinter.Label(master=self,
-                                        text="A",
+                                        
                                         bg=self.color_manager.theme_dark,
                                         fg=self.color_manager.text_2,
                                         font=("Avenir", 80))
